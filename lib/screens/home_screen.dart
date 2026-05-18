@@ -8,7 +8,6 @@ import 'favorites_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  // Liste de 6 recettes mockées pour la semaine 1
   static final List<Meal> _mockMeals = [
     Meal(id: '1', name: 'Lasagne', thumbnail: 'https://www.themealdb.com/images/media/meals/w18ki11628773321.jpg'),
     Meal(id: '2', name: 'Poutine', thumbnail: 'https://www.themealdb.com/images/media/meals/ypxpwv1568161514.jpg'),
@@ -20,7 +19,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Écoute active pour mettre à jour automatiquement le Badge de l'AppBar
     final favoriteCount = context.watch<FavoritesProvider>().favorites.length;
 
     return Scaffold(
@@ -42,7 +40,7 @@ class HomeScreen extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {}, // Implémenté en semaine 3
+            onPressed: () {},
           ),
         ],
       ),

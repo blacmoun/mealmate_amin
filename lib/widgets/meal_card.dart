@@ -13,7 +13,6 @@ class MealCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          // Utilisation du Navigator 1.0 imposé avec passage de l'objet Meal
           Navigator.push(
             context,
             MaterialPageRoute(
