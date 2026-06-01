@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/meal.dart';
 import '../providers/favorites_provider.dart';
-import '../widgets/meal_card.dart';
+import '../services/api_service.dart';
+import '../models/category.dart';
 import 'favorites_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  static final List<Meal> _mockMeals = [
-    Meal(id: '1', name: 'Lasagne', thumbnail: 'https://www.themealdb.com/images/media/meals/w18ki11628773321.jpg'),
-    Meal(id: '2', name: 'Poutine', thumbnail: 'https://www.themealdb.com/images/media/meals/ypxpwv1568161514.jpg'),
-    Meal(id: '3', name: 'Sushi', thumbnail: 'https://www.themealdb.com/images/media/meals/g046bb1663960946.jpg'),
-    Meal(id: '4', name: 'Tacos', thumbnail: 'https://www.themealdb.com/images/media/meals/uvuyxu1503067369.jpg'),
-    Meal(id: '5', name: 'Burger', thumbnail: 'https://www.themealdb.com/images/media/meals/lrstqq1529445310.jpg'),
-    Meal(id: '6', name: 'Crepes', thumbnail: 'https://www.themealdb.com/images/media/meals/9f47121683206412.jpg'),
-  ];
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ApiService _apiService = ApiService();
+  late Future<List<Category>> _categoriesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesFuture = _apiService.getCategories();
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _categoriesFuture = _apiService.getCategories();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +55,62 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(8.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.8,
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: FutureBuilder<List<Category>>(
+          future: _categoriesFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Erreur: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('Aucune catégorie trouvée.'));
+            }
+
+            final categories = snapshot.data!;
+            return GridView.builder(
+              padding: const EdgeInsets.all(8.0),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                return Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {},
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: Image.network(
+                            category.thumbnail,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.broken_image, size: 50),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            category.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
-        itemCount: _mockMeals.length,
-        itemBuilder: (context, index) {
-          return MealCard(meal: _mockMeals[index]);
-        },
       ),
     );
   }

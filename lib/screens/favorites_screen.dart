@@ -36,7 +36,27 @@ class FavoritesScreen extends StatelessWidget {
         ),
         itemCount: favorites.length,
         itemBuilder: (context, index) {
-          return MealCard(meal: favorites[index]);
+          final meal = favorites[index];
+          return Dismissible(
+            key: Key(meal.id),
+            direction: DismissDirection.horizontal,
+            onDismissed: (direction) {
+              context.read<FavoritesProvider>().toggleFavorite(meal);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Retiré des favoris'),
+                  duration: Duration(seconds: 1),
+                ),
+              );
+            },
+            background: Container(
+              color: Colors.red,
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: const Icon(Icons.delete, color: Colors.white),
+            ),
+            child: MealCard(meal: meal),
+          );
         },
       ),
     );
