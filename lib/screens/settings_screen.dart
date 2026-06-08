@@ -57,6 +57,13 @@ class SettingsScreen extends StatelessWidget {
               );
             },
           ),
+          const Divider(),
+          const AboutListTile(
+            icon: Icon(Icons.info),
+            applicationName: 'MealMate',
+            applicationVersion: '1.0.0',
+            applicationLegalese: 'Données fournies par l\'API publique TheMealDB.',
+          ),
         ],
       ),
     );
