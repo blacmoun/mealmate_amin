@@ -34,14 +34,29 @@ class Meal {
     }
 
     return Meal(
-      id: json['idMeal'] ?? '',
-      name: json['strMeal'] ?? '',
-      thumbnail: json['strMealThumb'] ?? '',
-      category: json['strCategory'] ?? '',
-      area: json['strArea'] ?? '',
-      instructions: json['strInstructions'] ?? '',
-      youtubeUrl: json['strYoutube'] ?? '',
-      ingredients: parsedIngredients,
+      id: json['idMeal'] ?? json['id'] ?? '',
+      name: json['strMeal'] ?? json['name'] ?? '',
+      thumbnail: json['strMealThumb'] ?? json['thumbnail'] ?? '',
+      category: json['strCategory'] ?? json['category'] ?? '',
+      area: json['strArea'] ?? json['area'] ?? '',
+      instructions: json['strInstructions'] ?? json['instructions'] ?? '',
+      youtubeUrl: json['strYoutube'] ?? json['youtubeUrl'] ?? '',
+      ingredients: json['ingredients'] != null
+          ? List<String>.from(json['ingredients'])
+          : parsedIngredients,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'thumbnail': thumbnail,
+      'category': category,
+      'area': area,
+      'instructions': instructions,
+      'youtubeUrl': youtubeUrl,
+      'ingredients': ingredients,
+    };
   }
 }
