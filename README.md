@@ -60,3 +60,9 @@ Conformément à la section « Aide autorisée » du cahier des charges, j'ai ut
 * Mise en place de la structure des appels HTTP (`async/await`, `try/catch` et `timeout`) dans le service API.
 
 L'IA a été utilisée comme un guide et un outil d'apprentissage, et j'ai moi-même intégré, testé et validé le code pour m'assurer qu'il respectait la stack technique stricte imposée.
+
+
+## 📊 Évaluation SUS
+Score moyen obtenu : 95 / 100
+
+Analyse : Ce score, largement au-dessus du seuil d'utilisabilité attendu, confirme que la navigation de base et la gestion des favoris sont intuitives pour les testeurs. Néanmoins, pour tutoyer l'excellence, il serait judicieux d'améliorer le contraste visuel du bouton d'ajout aux favoris sur l'écran des détails, afin d'attirer encore plus l'œil dès la première utilisation.

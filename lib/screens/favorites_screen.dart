@@ -14,50 +14,52 @@ class FavoritesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Mes favoris'),
       ),
-      body: favorites.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Aucun favori pour le moment.'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Découvrir des recettes'),
-            ),
-          ],
+      body: SafeArea(
+        child: favorites.isEmpty
+            ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Aucun favori pour le moment.'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Découvrir des recettes'),
+              ),
+            ],
+          ),
+        )
+            : GridView.builder(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 32.0),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.8,
+          ),
+          itemCount: favorites.length,
+          itemBuilder: (context, index) {
+            final meal = favorites[index];
+            return Dismissible(
+              key: Key(meal.id),
+              direction: DismissDirection.horizontal,
+              onDismissed: (direction) {
+                context.read<FavoritesProvider>().toggleFavorite(meal);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Retiré des favoris'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+              background: Container(
+                color: Colors.red,
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Icon(Icons.delete, color: Colors.white),
+              ),
+              child: MealCard(meal: meal),
+            );
+          },
         ),
-      )
-          : GridView.builder(
-        padding: const EdgeInsets.all(8.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.8,
-        ),
-        itemCount: favorites.length,
-        itemBuilder: (context, index) {
-          final meal = favorites[index];
-          return Dismissible(
-            key: Key(meal.id),
-            direction: DismissDirection.horizontal,
-            onDismissed: (direction) {
-              context.read<FavoritesProvider>().toggleFavorite(meal);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Retiré des favoris'),
-                  duration: Duration(seconds: 1),
-                ),
-              );
-            },
-            background: Container(
-              color: Colors.red,
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: const Icon(Icons.delete, color: Colors.white),
-            ),
-            child: MealCard(meal: meal),
-          );
-        },
       ),
     );
   }
